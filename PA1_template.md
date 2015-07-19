@@ -60,7 +60,7 @@ Now that we have the summarised dataframe, lets plot a histogram based on that
 ```r
 mean.no.of.steps <- mean(activity.bydate.sum$no.of.steps)
 median.no.of.steps <- median(activity.bydate.sum$no.of.steps)
-hist(activity.bydate.sum$no.of.steps, xlab="No of Steps", ylab="Count", main = "Histogram Of Total No Of Steps Each Day", breaks=10)
+hist(activity.bydate.sum$no.of.steps, xlab="No of Steps", ylab="Count", main = "Histogram Of Total No Of Steps Each Day (Before Imputation)", breaks=10)
 abline(v=mean.no.of.steps, col="red", lwd=2)
 abline(v=median.no.of.steps, col="blue", lwd=2)
 ```
@@ -87,6 +87,18 @@ with(activity.byinterval.mean, plot(interval, avg.no.of.steps, type="l", xlab = 
 ![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
 From the above graph, we can see that activity level is peaking during the morning hours which is sort of expected as a lot of poeple do excercise and go to office during morning hours.
+
+Lets find out the interval with maximum number of steps:
+
+
+```r
+maxsteps <- round(max(activity.byinterval.mean$avg.no.of.steps))
+interval.maxsteps <- with(activity.byinterval.mean, interval[avg.no.of.steps== max(avg.no.of.steps)])
+```
+
+```
+## [1] "Interval with maximum number of steps: 835 ; Count = 206"
+```
 
 ## Imputing missing values
 
@@ -116,12 +128,12 @@ activity.final.bydate <- group_by(activity.final, date)
 activity.final.bydate.sum <- summarise(activity.final.bydate, no.of.steps=sum(steps, na.rm=TRUE))
 mean.final.no.of.steps <- mean(activity.final.bydate.sum$no.of.steps)
 median.final.no.of.steps <- median(activity.final.bydate.sum$no.of.steps)
-hist(activity.final.bydate.sum$no.of.steps, xlab="No of Steps", ylab="Count", main = "Histogram Of Total No Of Steps Each Day", breaks=10)
+hist(activity.final.bydate.sum$no.of.steps, xlab="No of Steps", ylab="Count", main = "Histogram Of Total No Of Steps Each Day (After Imputation)", breaks=10)
 abline(v=mean.final.no.of.steps, col="red", lwd=1)
 abline(v=median.final.no.of.steps, col="blue", lwd=1)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-13-1.png) 
 
 ```
 ## [1] "Mean after imputing missing values (red): 10330.6721311475"
@@ -130,8 +142,6 @@ abline(v=median.final.no.of.steps, col="blue", lwd=1)
 ```
 ## [1] "Median after imputing missing values (blue): 11044"
 ```
-
-If we compare the two graphs, it can be seen that most of the missing values for aroung midnight. As the "NA" values have been replaced by mean value for that interval, height for the histogram has increased in that area. Correspondingly, the mean and median has shifted to the right as well.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 For answering this question, let's add another variable "day.type" indicating weather a particular day is "weekday" or "weekend". Based on this variable, create a plot to compare average activity over the "weekend" and "weekday".
@@ -158,7 +168,7 @@ ggplot(activity.byinterval.mean, aes(interval, avg.no.of.steps)) +
     ylab("Avarage number of steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-13-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-15-1.png) 
  
 Base on the above graphs, the following two observations can be made: 
 
